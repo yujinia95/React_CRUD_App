@@ -5,6 +5,8 @@ import AboutPage from '../pages/AboutPage';
 import StudentListPage from '../pages/StudentListPage';
 import StudentDetailPage from '../pages/StudentDetailPage';
 import NotFoundPage from "../components/NotFoundPage";
+import AddStudentForm from "../components/AddStudentForm";
+import UpdateStudent from "../components/UpdateStudent";
 
 /**
  * The router configuration for the application.
@@ -36,6 +38,14 @@ export const router = createBrowserRouter([
       {
         path: "/detail/:id",
         element: <StudentDetailPage />,
+      },
+      {
+        path: "/add",
+        element: <AddStudentForm />,
+      },
+      {
+        path: "/edit/:id",
+        element: <UpdateStudent />,
       },
       {
         path: "*",

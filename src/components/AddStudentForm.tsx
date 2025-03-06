@@ -5,10 +5,12 @@ import { Student } from "../models/Student";
 
 const AddStudentForm = () => {
     const [studentInfo, setStudentInfo] = useState<Student>({
-        StudentId: 0,
+        _id: "",
         FirstName: "",
         LastName: "",
         School: "",
+        StartDate: new Date().toISOString().split('T')[0],
+        __v: 0,
       });
       
     const navigate = useNavigate();
@@ -20,6 +22,7 @@ const AddStudentForm = () => {
                 FirstName: studentInfo.FirstName,
                 LastName: studentInfo.LastName,
                 School: studentInfo.School,
+                StartDate: studentInfo.StartDate
             }),
             headers:{'Content-Type':'application/json'}
         });
@@ -34,22 +37,34 @@ const AddStudentForm = () => {
     <div className="panel panel-default">
       <form>
         <h3>Add Student</h3>
-        <div className="form-group">
+
+        <div className="form-group mb-3">
           <label>First Name:</label>
           <input className="form-control" type="text" placeholder="First Name"
             value={studentInfo.FirstName} 
             onChange={(event) => setStudentInfo({...studentInfo, FirstName: event.target.value})}  />
         </div>
-        <div className="form-group">
+
+        <div className="form-group mb-3">
           <label>Last Name:</label>
           <input className="form-control" type="text" placeholder="Last Name"
             value={studentInfo.LastName} 
             onChange={(event) => setStudentInfo({...studentInfo, LastName: event.target.value})}  />
         </div>
-        <div className="form-group">
+
+        <div className="form-group mb-3">
           <label>School:</label>
           <input className="form-control" type="text" placeholder="School"
             value={studentInfo.School} onChange={(event) => setStudentInfo({...studentInfo, School: event.target.value})} />
+        </div>
+
+        <div className="form-group mb-3">
+          <label>Start Date:</label>
+          <input
+            className="form-control"
+            type="date"
+            value={studentInfo.StartDate}
+            onChange={(event) => setStudentInfo({...studentInfo, StartDate: event.target.value})} />
         </div>
 
         <input type="submit" 

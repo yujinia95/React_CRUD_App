@@ -1,53 +1,77 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import StudentList from "../components/StudentList";
 import NotFoundPage from "../components/NotFoundPage";
 import { useState, useEffect } from "react";
 import Config from "../config/";
 import { Student } from "../models/Student";
-import AddStudentForm from "../components/AddStudentForm";
+import { deleteStudent } from "../components/DeleteStudent";
 
 const StudentDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [studentInfo, setStudentInfo] = useState<Student>({
-    StudentId: 0,
+    _id: "",
     FirstName: "",
     LastName: "",
     School: "",
+    StartDate: new Date().toISOString().split("T")[0],
+    __v: 0,
   });
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await fetch(`${Config.API_BASE_URL}students/${id}`);
       const body = await result.json();
-      //console.log(body);
       setStudentInfo(body);
     };
     fetchData();
   }, [id]);
 
-  if (studentInfo.StudentId === 0) return <NotFoundPage />;
+
+  const handleDeleteSuccess = () => {
+    navigate('/list', { state: { refresh: true } });
+  };
+  if (studentInfo._id === "") return <NotFoundPage />;
 
   return (
     <section>
       <div style={{ width: "20%", float: "right" }}>
-        <h3>Others:</h3>
-        <StudentList exceptId={studentInfo.StudentId} />
+        <h3>Others</h3>
+        <StudentList exceptId={studentInfo._id} showActions={false} />
       </div>
 
-      <h4 className="text-muted">Student ID={studentInfo.StudentId}</h4>
-      <div>
-        <b>Name: </b>
-        {studentInfo.FirstName} {studentInfo.LastName}
+      <div className="card mb-4">
+        <div className="card-header">
+          <h4 className="mb-0">Student Details</h4>
+        </div>
+        <div className="card-body">
+        <p><b>ID: </b>{studentInfo._id}</p>
+          <p><b>Name: </b>{studentInfo.FirstName} {studentInfo.LastName}</p>
+          <p><b>School: </b>{studentInfo.School}</p>
+          <p><b>Start Date: </b>{studentInfo.StartDate ? studentInfo.StartDate.substring(0, 10) : ""}</p>
+          <div className="mt-3">
+            <button 
+              className="btn btn-primary me-2" 
+              onClick={() => navigate(`/edit/${studentInfo._id}`)}
+            >
+              Update
+            </button>
+            <button 
+              className="btn btn-danger me-2" 
+              onClick={() => deleteStudent(studentInfo._id, handleDeleteSuccess)}
+            >
+              Delete
+            </button>
+            <button 
+              className="btn btn-secondary" 
+              onClick={() => navigate('/list')}
+            >
+              Back to List
+            </button>
+          </div>
+        </div>
       </div>
-      <div>
-        <b>School: </b>
-        {studentInfo.School}
-      </div>
-      <div style={{ width: "50%", float: "left" }}>
-      <hr />
-      <AddStudentForm />
-    </div>
-
     </section>
   );
 };
